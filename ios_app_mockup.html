@@ -13,11 +13,28 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 
 /* iPhone 17 = 402 x 874 pt screen. Everything inside is authored in those points, then scaled to fit. */
 #stage{width:426px;height:898px;flex:none;transform-origin:center center;position:relative}
-.device{position:absolute;inset:0;border-radius:73px;background:linear-gradient(145deg,#4a4a50,#232326 40%,#3a3a40);padding:12px;box-shadow:0 40px 90px #000c,0 0 0 1px #ffffff22 inset,0 0 0 2px #0008}
+.device{position:absolute;inset:0;border-radius:73px;background:linear-gradient(145deg,var(--f1,#4a4a50),var(--f2,#232326) 40%,var(--f3,#3a3a40));padding:12px;box-shadow:0 40px 90px #000c,0 0 0 1px #ffffff22 inset,0 0 0 2px #0008}
 .device:before,.device:after{content:"";position:absolute;width:4px;border-radius:2px;background:#38383d}
 .device:before{left:-4px;top:150px;height:62px;box-shadow:0 84px 0 #38383d}
 .device:after{right:-4px;top:210px;height:100px}
 .screen{position:relative;width:402px;height:874px;border-radius:61px;overflow:hidden;background:#000}
+.ui{position:absolute;left:0;top:0;width:402px;height:874px;transform-origin:0 0}
+.android .device:before{display:none}
+.android .device:after{top:180px;height:64px;box-shadow:0 92px 0 #38383d}
+.is-notch .island{width:158px;height:31px;top:0;border-radius:0 0 20px 20px}
+.android .island{width:13px;height:13px;top:14px;border-radius:50%;box-shadow:0 0 0 2.5px #101012}
+.android .status .time{left:26px;top:14px;font-size:15px;font-weight:500}
+.android .status .time svg{display:none}
+.android .status .right{right:24px;top:15px;gap:5px}
+.android .home{width:112px;height:4px;bottom:9px}
+#devPick{position:fixed;left:16px;top:16px;z-index:100;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:#17171acc;backdrop-filter:blur(14px);border:1px solid #ffffff1c;box-shadow:0 10px 30px #0008;font-size:12px;color:#c9c9ce}
+#devPick .lbl{font-size:10.500px;letter-spacing:.16em;text-transform:uppercase;color:#85858c}
+#devPick .seg{display:flex;padding:3px;border-radius:10px;background:#0c0c0e}
+#devPick .seg button{flex:1;height:30px;padding:0 16px;border:0;border-radius:8px;background:none;color:#9a9aa0;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+#devPick .seg button.on{background:#fff;color:#000}
+#devPick select{height:34px;padding:0 10px;border-radius:9px;border:1px solid #34343a;background:#0c0c0e;color:#fff;font-family:inherit;font-size:13px;outline:none;cursor:pointer}
+#devPick .sz{font-size:11px;color:#85858c}
+
 
 /* ---- Login screen ---- */
 .bg{position:absolute;inset:0;background:#000;overflow:hidden}
@@ -49,8 +66,8 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 .err{position:absolute;left:4px;top:100%;margin-top:3px;font-size:11.5px;color:#ff6b70;white-space:nowrap}
 .forgot{position:absolute;right:10.5px;top:520px;background:none;border:0;color:#fff;font-weight:400;font-size:16px;font-family:inherit;padding:8px 0;cursor:pointer}
 .forgot:active{opacity:.55}
-.light{position:absolute;left:0;right:0;top:703px;text-align:center;font-size:17px;font-weight:400;letter-spacing:.1px}
-.btn{position:absolute;left:10.5px;right:10.5px;top:735px;height:53px;border:0;border-radius:11px;background:#fff;color:#000;font-weight:700;font-size:17.5px;font-family:inherit;letter-spacing:.2px;cursor:pointer;transition:transform .12s,opacity .12s}
+.light{position:absolute;left:0;right:0;bottom:150px;line-height:21px;text-align:center;font-size:17px;font-weight:400;letter-spacing:.1px}
+.btn{position:absolute;left:10.5px;right:10.5px;bottom:86px;height:53px;border:0;border-radius:11px;background:#fff;color:#000;font-weight:700;font-size:17.5px;font-family:inherit;letter-spacing:.2px;cursor:pointer;transition:transform .12s,opacity .12s}
 .btn:active{transform:scale(.975);opacity:.85}
 .btn.loading{pointer-events:none;opacity:.75}
 .home{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:140px;height:5px;border-radius:3px;background:#fff;z-index:12;pointer-events:none}
@@ -172,9 +189,15 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 </style>
 </head>
 <body>
+<div id="devPick">
+ <div class="lbl">Device</div>
+ <div class="seg"><button type="button" data-p="ios" class="on">iOS</button><button type="button" data-p="android">Android</button></div>
+ <select id="devSel" aria-label="Device model"></select>
+ <div class="sz" id="devSz"></div>
+</div>
 <div id="stage">
  <div class="device">
-  <div class="screen" id="screen">
+  <div class="screen" id="screen"><div class="ui" id="ui">
    <div class="island"></div>
    <div class="status">
     <div class="time">12:30
@@ -283,7 +306,7 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
    <div class="loader" id="loader"><div class="spin"></div><div class="lt" id="lText"></div><div class="bar"><i></i></div></div>
    <div class="toast" id="toast"></div>
    <div class="home"></div>
-  </div>
+  </div></div>
  </div>
 </div>
 <div class="cap">ZYLX · iPhone 17 · Interactive Prototype</div>
@@ -292,13 +315,65 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 (() => {
   const $ = id => document.getElementById(id);
 
-  // Scale the 402x874 device to fit any browser window, centred.
-  const stage = $('stage');
-  function fit(){
-    const s = Math.min((innerHeight - 40) / 898, (innerWidth - 20) / 426, 1.25);
+  // Device catalogue. UI is authored at 402pt wide and scaled uniformly to each device's width.
+  const IOS_F = ['#4a4a50', '#232326', '#3a3a40'], IOS_PRO = ['#6a625a', '#2b2926', '#524b45'], IOS_AIR = ['#d4d4d8', '#8e8e94', '#bdbdc2'];
+  const DEVICES = {
+    ios: [
+      {n: 'iPhone 17 Pro Max', w: 440, h: 956, r: 62, t: 'island', f: IOS_PRO},
+      {n: 'iPhone 17 Pro', w: 402, h: 874, r: 61, t: 'island', f: IOS_PRO},
+      {n: 'iPhone 17', w: 402, h: 874, r: 61, t: 'island', f: IOS_F},
+      {n: 'iPhone Air', w: 420, h: 912, r: 62, t: 'island', f: IOS_AIR},
+      {n: 'iPhone 16 Pro Max', w: 440, h: 956, r: 60, t: 'island', f: IOS_PRO},
+      {n: 'iPhone 16', w: 393, h: 852, r: 55, t: 'island', f: IOS_F},
+      {n: 'iPhone 15', w: 393, h: 852, r: 55, t: 'island', f: IOS_F},
+      {n: 'iPhone 14', w: 390, h: 844, r: 47, t: 'notch', f: IOS_F},
+      {n: 'iPhone 13', w: 390, h: 844, r: 47, t: 'notch', f: IOS_F},
+      {n: 'iPhone 13 mini', w: 375, h: 812, r: 44, t: 'notch', f: IOS_F}
+    ],
+    android: [
+      {n: 'Google Pixel 9', w: 412, h: 915, r: 42, t: 'punch', f: ['#4b5054', '#1f2224', '#383c3f'], bz: 9},
+      {n: 'Google Pixel 9 Pro XL', w: 448, h: 980, r: 42, t: 'punch', f: ['#7b7468', '#2a2824', '#5a554c'], bz: 9},
+      {n: 'Samsung Galaxy S25 Ultra', w: 412, h: 915, r: 26, t: 'punch', f: ['#6c7075', '#2a2c2f', '#505358'], bz: 7},
+      {n: 'Samsung Galaxy S24', w: 360, h: 780, r: 38, t: 'punch', f: ['#8a8a92', '#34343a', '#6a6a72'], bz: 8},
+      {n: 'OnePlus 12', w: 412, h: 915, r: 38, t: 'punch', f: ['#3f4a44', '#161a18', '#2c3531'], bz: 8}
+    ]
+  };
+  const stage = $('stage'), scr = $('screen'), ui = $('ui'), sel = $('devSel');
+  let platform = 'ios', devIdx = 2;
+  function fit() {
+    const s = Math.min((innerHeight - 40) / stage.offsetHeight, (innerWidth - 20) / stage.offsetWidth, 1.25);
     stage.style.transform = 'scale(' + s + ')';
   }
-  addEventListener('resize', fit); fit();
+  function setDevice() {
+    const d = DEVICES[platform][devIdx], bz = d.bz || 12, k = d.w / 402;
+    const dev = stage.querySelector('.device');
+    stage.style.width = (d.w + bz * 2) + 'px'; stage.style.height = (d.h + bz * 2) + 'px';
+    dev.style.padding = bz + 'px'; dev.style.borderRadius = (d.r + bz) + 'px';
+    ['--f1', '--f2', '--f3'].forEach((v, i) => dev.style.setProperty(v, d.f[i]));
+    scr.style.width = d.w + 'px'; scr.style.height = d.h + 'px'; scr.style.borderRadius = d.r + 'px';
+    ui.style.height = (d.h / k) + 'px'; ui.style.transform = 'scale(' + k + ')';
+    stage.className = platform;
+    scr.className = 'screen ' + platform + ' is-' + d.t;
+    $('devSz').textContent = d.n + ' · ' + d.w + ' × ' + d.h + ' pt';
+    document.querySelector('.cap').textContent = 'ZYLX · ' + d.n + ' · Interactive Prototype';
+    fit();
+    try { localStorage.setItem('zylxDev', platform + ':' + devIdx); } catch (e) {}
+  }
+  function fillList() {
+    sel.innerHTML = DEVICES[platform].map((d, i) => '<option value="' + i + '">' + d.n + '</option>').join('');
+    sel.value = devIdx;
+    document.querySelectorAll('#devPick .seg button').forEach(b => b.classList.toggle('on', b.dataset.p === platform));
+  }
+  document.querySelectorAll('#devPick .seg button').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.p === platform) return;
+    platform = b.dataset.p; devIdx = 0; fillList(); setDevice();
+  }));
+  sel.addEventListener('change', () => { devIdx = +sel.value; setDevice(); });
+  try {
+    const sv = (localStorage.getItem('zylxDev') || '').split(':');
+    if (DEVICES[sv[0]] && DEVICES[sv[0]][+sv[1]]) { platform = sv[0]; devIdx = +sv[1]; }
+  } catch (e) {}
+  addEventListener('resize', fit); fillList(); setDevice();
 
   const email = $('email'), pw = $('pw'), eErr = $('eErr'), pErr = $('pErr');
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
