@@ -21,7 +21,12 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 .ui{position:absolute;left:0;top:0;width:402px;height:874px;transform-origin:0 0}
 .android .device:before{display:none}
 .android .device:after{top:180px;height:64px;box-shadow:0 92px 0 #38383d}
-.is-notch .island{width:158px;height:31px;top:0;border-radius:0 0 20px 20px}
+.is-notch .island{width:158px;height:32px;top:0;border-radius:0 0 21px 21px;box-shadow:0 0 0 1.5px #2c2c30,inset 0 -1px 0 #1d1d20;background:#000}
+.is-notch .island:before{content:"";position:absolute;left:50%;top:10px;width:48px;height:5px;margin-left:-24px;border-radius:3px;background:#17171a}
+.is-notch .island:after{content:"";position:absolute;left:50%;top:9px;width:8px;height:8px;margin-left:34px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2b3550,#0a0a10 70%);box-shadow:0 0 0 1.5px #131316}
+.is-notch .status .time{left:46px;top:15px}
+.is-notch .status .right{right:30px;top:17px}
+.is-notch .status{height:47px}
 .android .island{width:13px;height:13px;top:14px;border-radius:50%;box-shadow:0 0 0 2.5px #101012}
 .android .status .time{left:26px;top:14px;font-size:15px;font-weight:500}
 .android .status .time svg{display:none}
