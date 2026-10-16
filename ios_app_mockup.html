@@ -330,7 +330,7 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
       const acct = pw.value === 'Abcd@12345' ? accounts[em] : null;
       if (!acct) { flag(pw, pErr, 'Invalid email or password'); toast('Invalid email or password'); return; }
       session = acct; switching = false;
-      if (acct.role === 'member') { enterDash('Utah Tech Labs'); return; }
+      if (acct.role === 'member' && !acct.multi) { enterDash('Utah Tech Labs'); return; }
       document.querySelectorAll('.org').forEach(o => o.classList.remove('sel'));
       $('oCont').disabled = true; $('orgSheet').classList.add('on');
     }, 800);
@@ -343,7 +343,8 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
   let switching = false, curOrg = '';
   const accounts = {
     'jpadmin@yopmail.com': {role: 'admin', name: 'Jyotirmoy Patra', ini: 'JP', no: null},
-    'jpuser@yopmail.com': {role: 'member', name: 'Jyotirmoy User', ini: 'JU', no: 'XXXXXX7247'}
+    'jpuser@yopmail.com': {role: 'member', name: 'Jyotirmoy User', ini: 'JU', no: 'XXXXXX7247'},
+    'ankituser@yopmail.com': {role: 'member', multi: true, name: 'Ankit User', ini: 'AU', no: {'Utah Tech Labs': 'XXXXXX3318', 'Auric Logon Office': 'XXXXXX9054'}}
   };
   let session = accounts['jpadmin@yopmail.com'];
   const roleHtml = {
@@ -355,14 +356,14 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
     curOrg = name;
     document.querySelectorAll('.orgName').forEach(e => e.textContent = name);
     $('logoG').setAttribute('fill', info.color);
-    $('cardNo').textContent = session.no || info.no;
+    $('cardNo').textContent = (session.no && (session.no[name] || session.no)) || info.no;
     ['hName', 'cName', 'pName'].forEach(i => $(i).textContent = session.name);
     $('pAv').classList.toggle('gen', member);
     $('pAv').innerHTML = member ? '<svg viewBox="0 0 24 24" fill="#000"><circle cx="12" cy="7.500" r="3.800"/><path d="M4.500 19.500c0-3.600 3-5.800 7.500-5.800s7.500 2.200 7.500 5.800c0 .6-.5 1-1.100 1H5.600c-.6 0-1.100-.4-1.100-1Z"/></svg>' : session.ini;
     document.querySelectorAll('.role').forEach(r => r.innerHTML = roleHtml[session.role]);
     document.querySelector('.tabbar button[data-m=devices]').style.display = member ? 'none' : '';
     $('userMgmt').style.display = member ? 'none' : '';
-    $('switchOrg').style.display = member ? 'none' : '';
+    $('switchOrg').style.display = member && !session.multi ? 'none' : '';
     $('bellN').style.display = member ? 'none' : '';
     renderDoors(name); renderDevices(name);
     $('who').textContent = email.value.trim();
