@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZYLX — iPhone 17 Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,#2a2a2e 0,#121214 55%,#08080a 100%);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+
+/* iPhone 17 = 402 x 874 pt screen. Everything inside is authored in those points, then scaled to fit. */
+#stage{width:426px;height:898px;flex:none;transform-origin:center center;position:relative}
+.device{position:absolute;inset:0;border-radius:73px;background:linear-gradient(145deg,#4a4a50,#232326 40%,#3a3a40);padding:12px;box-shadow:0 40px 90px #000c,0 0 0 1px #ffffff22 inset,0 0 0 2px #0008}
+.device:before,.device:after{content:"";position:absolute;width:4px;border-radius:2px;background:#38383d}
+.device:before{left:-4px;top:150px;height:62px;box-shadow:0 84px 0 #38383d}
+.device:after{right:-4px;top:210px;height:100px}
+.screen{position:relative;width:402px;height:874px;border-radius:61px;overflow:hidden;background:#000}
+
+/* ---- Login screen ---- */
+.bg{position:absolute;inset:0;background:#000;overflow:hidden}
+.bg{background:radial-gradient(ellipse 70% 40% at 0% 25%,#1a1a1c,transparent 70%),linear-gradient(125deg,transparent 35%,#141415 52%,transparent 68%),#000}
+
+.status{position:absolute;top:0;left:0;right:0;height:54px;z-index:10;pointer-events:none}
+.status .time{position:absolute;left:34px;top:19px;font-size:17px;font-weight:600;display:flex;align-items:center;gap:6px;letter-spacing:-.2px}
+.status .right{position:absolute;right:28px;top:21px;display:flex;align-items:center;gap:6px}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:124px;height:36px;border-radius:20px;background:#000;z-index:11}
+
+.login{position:absolute;inset:0;z-index:2;transition:opacity .3s,transform .3s}
+.logo{position:absolute;left:46px;top:98px;width:310px}
+.logo svg{display:block;width:100%;height:auto}
+.tag{position:absolute;left:0;right:0;top:190px;text-align:center;font-size:16.5px;font-weight:700;letter-spacing:.34em;padding-left:.34em}
+.h1{position:absolute;left:0;right:0;top:250px;text-align:center;font-size:19.5px;font-weight:500;letter-spacing:-.1px;margin:0}
+.welcome{position:absolute;left:0;right:0;top:282px;text-align:center;font-size:16px;color:#7a7a7d;font-weight:400}
+.field{position:absolute;left:10.5px;right:10.5px}
+.field.email{top:333px}.field.pass{top:426px}
+.field label{display:block;font-size:17px;font-weight:500;line-height:26px;margin-bottom:6px}
+.field label i{color:#e5383b;font-style:normal;font-size:15px;margin-left:5px;position:relative;top:-3px}
+.box{position:relative}
+.box input{width:100%;height:51px;border:1.5px solid transparent;border-radius:11px;background:#222222;color:#fff;font-size:17px;font-weight:400;font-family:inherit;padding:0 15px;outline:none;transition:border-color .15s,background .15s;-webkit-appearance:none}
+.box input::placeholder{color:#74747a}
+.box input:focus{border-color:#7d7d84;background:#262628}
+.box input.bad{border-color:#e5383b}
+.box input.pw{padding-right:54px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:none;color:#fff;display:grid;place-items:center;cursor:pointer;padding:0}
+.eye svg{width:26px;height:26px}
+.err{position:absolute;left:4px;top:100%;margin-top:3px;font-size:11.5px;color:#ff6b70;white-space:nowrap}
+.forgot{position:absolute;right:10.5px;top:520px;background:none;border:0;color:#fff;font-weight:400;font-size:16px;font-family:inherit;padding:8px 0;cursor:pointer}
+.forgot:active{opacity:.55}
+.light{position:absolute;left:0;right:0;top:703px;text-align:center;font-size:17px;font-weight:400;letter-spacing:.1px}
+.btn{position:absolute;left:10.5px;right:10.5px;top:735px;height:53px;border:0;border-radius:11px;background:#fff;color:#000;font-weight:700;font-size:17.5px;font-family:inherit;letter-spacing:.2px;cursor:pointer;transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.975);opacity:.85}
+.btn.loading{pointer-events:none;opacity:.75}
+.home{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:140px;height:5px;border-radius:3px;background:#fff;z-index:12;pointer-events:none}
+
+/* ---- Dashboard (after login) ---- */
+.dash{position:absolute;inset:0;z-index:3;background:radial-gradient(ellipse 80% 35% at 0% 20%,#1a1a1c,transparent 70%),linear-gradient(125deg,transparent 30%,#131314 50%,transparent 70%),#000;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .35s,transform .35s;overflow:hidden}
+.dash.on{opacity:1;pointer-events:auto;transform:none}
+.d-head{position:absolute;left:10.5px;right:10.5px;top:56px}
+.d-head .hi{font-size:16px;font-weight:600;color:#8a8a8e;line-height:24px}
+.d-head .nm{font-size:21px;font-weight:500;line-height:28px;margin-top:2px}
+.role{display:inline-flex;align-items:center;gap:7px;margin-top:6px;height:24px;padding:0 13px 0 10px;border-radius:12px;border:1px solid #1d4f9a;background:#0d2342;color:#2f8cff;font-size:12.5px;font-weight:600}
+.role svg{width:12px;height:13px}
+.bell{position:absolute;right:10.5px;top:59px;width:41px;height:42px;border:0;border-radius:11px;background:#1c1c1e;display:grid;place-items:center;cursor:pointer;color:#fff;padding:0}
+.bell svg{width:22px;height:22px}
+.bell b{position:absolute;right:-5px;top:-6px;min-width:17px;height:17px;border-radius:9px;background:#e5383b;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 4px}
+.d-tabs{position:absolute;left:0;right:0;top:165px;height:36px;border-bottom:1px solid #2a2a2d;display:flex}
+.d-tabs button{flex:1;position:relative;border:0;background:none;color:#7a7a7e;font-family:inherit;font-size:17px;font-weight:600;cursor:pointer;padding:0 0 12px}
+.d-tabs button.on{color:#fff}
+.d-tabs button.on:after{content:"";position:absolute;left:21px;right:21px;bottom:-1px;height:2.5px;background:#fff;border-radius:2px}
+.d-body{position:absolute;left:0;right:0;top:202px;bottom:97px;overflow-y:auto;scrollbar-width:none}
+.d-body::-webkit-scrollbar{display:none}
+.page{display:none;padding:29px 10.5px 16px}#p-remote{padding-top:9px}.page.on{display:block}
+.idcard{position:relative;height:192px;border-radius:15px;border:1px solid #2e2e31;background:linear-gradient(135deg,#222224,#171718 55%,#1c1c1e);padding:0 21px}
+.idcard .t{position:absolute;left:21px;top:19px;font-size:17px;font-weight:600}
+.idcard .np{position:absolute;right:21px;top:19px;font-size:17px;font-weight:600;color:#8a8a8e}
+.idcard .lg{position:absolute;left:23px;top:79px;width:54px;height:46px}
+.idcard .sig{position:absolute;right:22px;top:98px;width:30px;height:30px}
+.idcard .un{position:absolute;left:21px;bottom:19px;font-size:15px;color:#8a8a8e}
+.idcard .no{position:absolute;right:21px;bottom:19px;font-size:15px;color:#8a8a8e}
+.walk{text-align:center;color:#6e6e72;font-size:17.5px;font-weight:600;margin:23px 0 24px}
+.how{text-align:center;font-size:19px;font-weight:600;margin:0 0 12px}
+.page p.tx{margin:0 0 17px;padding:0 15px;font-size:14.5px;line-height:18px;color:#f2f2f2}
+.door{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;margin-bottom:10px;background:#1c1c1e;border:1px solid #2c2c2f;border-radius:14px}
+.door b{display:block;font-size:16px;font-weight:600}.door span{font-size:12.5px;color:#8a8a8e}
+.door button{height:36px;padding:0 18px;border:0;border-radius:10px;background:#fff;color:#000;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s}
+.door button.ok{background:#2fbf71;color:#fff}
+.rd{display:flex;align-items:center;justify-content:space-between;height:93px;margin-bottom:20.500px;padding:0 16px 0 17px;border-radius:13px;border:1px solid #2e2e31;background:linear-gradient(135deg,#222224,#151516 60%,#1a1a1b)}
+.rd b{font-size:16.500px;font-weight:600;white-space:nowrap;margin-left:4px}
+.rd .bt{display:flex;gap:19px}
+.rd button{width:70px;height:59px;border-radius:11px;border:1.5px solid #3b3b3f;background:none;color:#fff;font-family:inherit;font-size:12.500px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:0;transition:border-color .2s,color .2s,transform .12s}
+.rd button svg{width:23px;height:22px}
+.rd button:active{transform:scale(.95)}
+.rd button.ok{border-color:#2fbf71;color:#2fbf71}
+.d-title{position:absolute;left:10.5px;top:62px;font-size:23px;font-weight:600;line-height:34px;display:none}
+.dash.sub .d-head,.dash.sub .d-tabs{display:none}
+.dash.sub .d-title{display:block}
+.dash.sub .d-body{top:104px}
+.dash.sub .bell{top:62px}
+.dash.sub .page{padding-top:19px}
+.cfg{width:100%;height:53px;border-radius:13px;border:1.5px solid #34343a;background:none;color:#fff;font-family:inherit;font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;margin-bottom:34px;transition:background .15s}
+.cfg:active{background:#ffffff12}
+.cfg svg{width:17px;height:17px}
+.sub-h{font-size:19px;font-weight:600;margin:0 0 15px}
+.dv{display:flex;align-items:center;height:65px;margin-bottom:15.500px;padding:0 16px 0 24px;border-radius:13px;border:1px solid #2e2e31;background:linear-gradient(135deg,#222224,#151516 60%,#1a1a1b);cursor:pointer}
+.dv svg{width:17px;height:25px;flex:none}
+.dv b{flex:1;margin-left:26px;font-size:16.500px;font-weight:600;white-space:nowrap}
+.dv i{font-style:normal;width:67px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:13.500px;font-weight:500}
+.dv i.off{background:#ff3b3b}.dv i.on{background:#2fd158}
+#p-profile{padding:32px 10.5px 24px}
+.pf{text-align:center}
+.pf .av2{width:104px;height:104px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:36px;font-weight:600;color:#d8d8dc;background:radial-gradient(circle at 35% 30%,#4a4a50,#1d1d20 70%);border:2px solid #55555b}
+.pf .av2.gen{background:#5a5a5c;border:2px solid #a8a8ab}
+.pf .av2 svg{width:62px;height:62px}
+.pf .pn{font-size:20px;font-weight:500;margin-top:15px;line-height:28px}
+.pf .role{margin-top:14px}
+.edit{display:block;margin:12px auto 0;width:130px;height:35px;border:0;border-radius:9px;background:#fff;color:#000;font-family:inherit;font-size:17px;font-weight:600;cursor:pointer;transition:transform .12s}
+.edit:active{transform:scale(.96)}
+.menu{margin-top:30px;border-radius:15px;border:1px solid #2e2e31;background:linear-gradient(135deg,#202022,#151516 60%,#19191a);padding:0 20px 0 20px}
+.mi{display:flex;align-items:center;justify-content:space-between;width:100%;height:72px;border:0;border-bottom:1px solid #2f2f33;background:none;color:#fff;font-family:inherit;font-size:17.500px;text-align:left;padding:0 0 0 0;cursor:pointer}
+.mi:last-child{border-bottom:0;cursor:default}
+.mi:active:not(.ver){opacity:.6}
+.mi svg{width:16px;height:16px;flex:none}
+.mi.red{color:#ff3b3b}
+.mi.ver span{color:#8a8a8e;font-size:16px}
+.loader{position:absolute;inset:0;z-index:40;background:#000e;backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;transition:opacity .3s}
+.loader.on{opacity:1;pointer-events:auto}
+.spin{width:64px;height:64px;border-radius:50%;border:4px solid #2b2b2f;border-top-color:#fff;animation:sp .9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loader .lt{font-size:18px;font-weight:600;text-align:center;line-height:26px}
+.loader .lt small{display:block;color:#8a8a8e;font-size:14px;font-weight:400}
+.loader .bar{width:160px;height:4px;border-radius:2px;background:#2b2b2f;overflow:hidden}
+.loader .bar i{display:block;height:100%;width:0;background:#fff;border-radius:2px}
+.loader.on .bar i{animation:fill 1.7s ease-in-out forwards}
+@keyframes fill{to{width:100%}}
+.dash.swap .d-body,.dash.swap .d-head{animation:rise .5s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.sec{font-size:22px;font-weight:700;margin:0 0 14px}
+.prof{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.av{width:56px;height:56px;border-radius:50%;background:#2a2a2d;display:grid;place-items:center;font-size:20px;font-weight:700}
+.rowb{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 16px;margin-bottom:10px;background:#1c1c1e;border:1px solid #2c2c2f;border-radius:14px;color:#fff;font-family:inherit;font-size:15.5px;text-align:left;cursor:pointer}
+.rowb span{color:#8a8a8e;font-size:14px}
+.rowb.red{color:#ff6b70;justify-content:center;font-weight:600}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:97px;border-top:1px solid #2a2a2d;background:#000d;display:flex;padding-top:11px}
+.tabbar button{flex:1;border:0;background:none;color:#6b6b70;font-family:inherit;font-size:14.5px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:0}
+.tabbar button svg{width:28px;height:26px}
+.tabbar button.on{color:#fff}
+
+/* ---- Overlays ---- */
+.sheet{position:absolute;inset:0;z-index:20;background:#000a;backdrop-filter:blur(8px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet.on{opacity:1;pointer-events:auto}
+.panel{width:100%;background:#1c1c1e;border-radius:28px 28px 0 0;padding:26px 16px 40px;transform:translateY(40px);transition:transform .3s}
+.sheet.on .panel{transform:none}
+.panel h3{margin:0 0 6px;font-size:21px;font-weight:700}
+.panel p{margin:0 0 16px;color:#9a9aa0;font-size:14px;line-height:1.45}
+.panel .box input{background:#2a2a2d}
+.row{display:flex;gap:10px;margin-top:16px}
+.row button{flex:1;height:48px;border:0;border-radius:11px;font-weight:600;font-size:16px;font-family:inherit;cursor:pointer}
+.row .c{background:#2c2c2f;color:#fff}.row .s{background:#fff;color:#000}
+.msg{min-height:18px;margin-top:12px;font-size:13px;color:#7fe0a0}
+.org{display:flex;align-items:center;gap:14px;width:100%;padding:15px 16px;margin-bottom:10px;border:1.5px solid #333337;border-radius:13px;background:#242427;color:#fff;font-family:inherit;font-size:17px;font-weight:500;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.org .ck{flex:none;width:24px;height:24px;border-radius:7px;border:2px solid #6a6a70;display:grid;place-items:center;transition:.15s}
+.org .ck svg{width:15px;height:15px;opacity:0;transition:opacity .15s}
+.org.sel{border-color:#fff;background:#2e2e32}
+.org.sel .ck{background:#fff;border-color:#fff}.org.sel .ck svg{opacity:1}
+#oCont:disabled{opacity:.4;cursor:not-allowed}
+.toast{position:absolute;z-index:30;top:60px;left:16px;right:16px;padding:13px 16px;border-radius:16px;background:#2a2a2d;font-size:14px;box-shadow:0 10px 30px #000a;opacity:0;transform:translateY(-14px);transition:.3s;pointer-events:none}
+.toast.on{opacity:1;transform:none}
+.cap{position:fixed;bottom:10px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6c6c72;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage">
+ <div class="device">
+  <div class="screen" id="screen">
+   <div class="island"></div>
+   <div class="status">
+    <div class="time">12:30
+     <svg width="15" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 22a2.3 2.3 0 0 0 2.3-2.3H9.7A2.3 2.3 0 0 0 12 22Zm7-6.2V11a7 7 0 0 0-5-6.7V3.5a2 2 0 0 0-4 0v.8A7 7 0 0 0 5 11v4.8l-2 2v1h18v-1l-2-2Z"/><path d="M3 3l18 18" stroke="#000" stroke-width="5" fill="none"/><path d="M3 3l18 18" stroke="#fff" stroke-width="2.2" fill="none"/></svg>
+    </div>
+    <div class="right">
+     <svg width="20" height="6" viewBox="0 0 20 6" fill="#8a8a8e"><circle cx="2" cy="3" r="1.6"/><circle cx="7.3" cy="3" r="1.6"/><circle cx="12.6" cy="3" r="1.6"/><circle cx="18" cy="3" r="1.6"/></svg>
+     <svg width="19" height="14" viewBox="0 0 19 14" fill="#fff"><path d="M9.5 2.6c2.6 0 5 1 6.800 2.700l1.300-1.400C15.400 1.800 12.600.6 9.500.6S3.600 1.800 1.400 3.900l1.300 1.400C4.500 3.600 6.900 2.600 9.500 2.600Zm0 4c1.500 0 2.900.6 4 1.600l1.400-1.400A8.200 8.200 0 0 0 9.500 4.600c-2.100 0-4.100.8-5.400 2.200l1.400 1.400c1.100-1 2.500-1.600 4-1.600Zm0 4a3 3 0 0 0-2 .8L9.500 14l2-2.600a3 3 0 0 0-2-.8Z"/></svg>
+     <svg width="30" height="14" viewBox="0 0 30 14"><rect x=".8" y=".8" width="25.400" height="12.400" rx="4" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1.200"/><rect x="2.600" y="2.600" width="21.800" height="8.800" rx="2.600" fill="#fff"/><path d="M27.600 4.800v4.400c.9-.3 1.500-1.200 1.500-2.200s-.6-1.900-1.500-2.200Z" fill="#fff" fill-opacity=".5"/></svg>
+    </div>
+   </div>
+
+   <div class="bg"></div>
+
+   <form class="login" id="login" novalidate>
+    <div class="logo">
+     <svg viewBox="100 215 725 200" fill="#fff" aria-label="ZYLX">
+      <polygon points="110,225 270,225 270,260 178,368 270,368 270,405 106,405 106,370 198,262 110,262"/>
+      <polygon points="290,225 336,225 374,290 412,225 458,225 394,322 394,405 354,405 354,322"/>
+      <polygon points="482,225 522,225 522,368 625,368 625,405 482,405"/>
+      <polygon points="638,225 686,225 726,286 766,225 812,225 750,315 817,405 768,405 725,342 682,405 632,405 700,315"/>
+     </svg>
+    </div>
+    <div class="tag">Future Unlocked</div>
+    <h1 class="h1">LOG IN TO YOUR ACCOUNT</h1>
+    <div class="welcome">WELCOME!</div>
+
+    <div class="field email">
+     <label for="email">Email Address<i>*</i></label>
+     <div class="box"><input id="email" type="email" placeholder="Enter Email Address" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="err" id="eErr"></span></div>
+    </div>
+    <div class="field pass">
+     <label for="pw">Password<i>*</i></label>
+     <div class="box">
+      <input id="pw" class="pw" type="password" placeholder="Enter Password" autocomplete="off">
+      <button type="button" class="eye" id="eye" aria-label="Show password">
+       <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 5C6.500 5 2.700 9 1.500 11.300a1.500 1.500 0 0 0 0 1.400C2.700 15 6.500 19 12 19s9.300-4 10.500-6.300a1.500 1.500 0 0 0 0-1.400C21.300 9 17.500 5 12 5Zm0 11.200a4.200 4.200 0 1 1 0-8.400 4.200 4.200 0 0 1 0 8.400Zm0-6.400a2.200 2.200 0 1 0 0 4.400 2.200 2.200 0 0 0 0-4.400Z" fill-rule="evenodd" style="display:none"/><path id="eyeOpen" d="M12 5.500C6.800 5.500 3.200 9.300 2 11.400a1.200 1.200 0 0 0 0 1.200c1.200 2.100 4.800 5.900 10 5.900s8.800-3.800 10-5.900a1.200 1.200 0 0 0 0-1.200C20.800 9.300 17.200 5.500 12 5.500Zm0 10a3.500 3.500 0 1 1 0-7 3.500 3.500 0 0 1 0 7Z"/><circle id="eyePupil" cx="12" cy="12" r="2.100" fill="#fff"/><path id="eyeSlash" d="M4 4l16 16" stroke="#fff" stroke-width="2.200" stroke-linecap="round" style="display:none"/></svg>
+      </button>
+      <span class="err" id="pErr"></span>
+     </div>
+    </div>
+    <button type="button" class="forgot" id="forgot">Forgot Password ?</button>
+
+    <div class="light">Access at Light Speed</div>
+    <button type="submit" class="btn" id="btn">LOG IN</button>
+   </form>
+
+   <div class="dash" id="dash">
+    <div class="d-head">
+     <div class="hi">Welcome!</div>
+     <div class="nm" id="hName">Jyotirmoy Patra</div>
+     <div class="role"><svg viewBox="0 0 24 24" fill="#2f8cff"><path d="M12 2 4 5v6c0 5 3.400 9.400 8 11 4.600-1.600 8-6 8-11V5l-8-3Z"/></svg>Organization Sub Admin</div>
+    </div>
+    <div class="d-title" id="dTitle">Devices</div>
+    <button class="bell" id="bell" type="button" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.500 2h-15L6 17Z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg><b id="bellN">6</b></button>
+    <div class="d-tabs"><button class="on" data-t="p-tap">Phone Tap</button><button data-t="p-remote">Remote</button></div>
+    <div class="d-body">
+     <div class="page on" id="p-tap">
+      <div class="idcard">
+       <div class="t orgName">Utah Tech Labs</div><div class="np">NextPro</div>
+       <svg class="lg" viewBox="0 0 56 48"><g id="logoG" fill="#1ea7ff"><path d="M1 1h54L16 47 20 24 1 1Z" style="display:none"/><path d="M0 0h56L16 46l6-25-14-3 22-3L0 0Z"/><path d="M3 31l8 4 8-3-9 8-7-9Z"/></g></svg>
+       <svg class="sig" viewBox="0 0 32 32" fill="none" stroke="#1d6fb8" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="3.200" fill="#1ea7ff" stroke="none"/><path d="M10 10a8.500 8.500 0 0 0 0 12M6.500 7a13 13 0 0 0 0 18M22 10a8.500 8.500 0 0 1 0 12M25.500 7a13 13 0 0 1 0 18"/></svg>
+       <div class="un" id="cName">Jyotirmoy Patra</div><div class="no" id="cardNo">XXXXXX8175</div>
+      </div>
+      <div class="walk">Walk closer to the door</div>
+      <div class="how">How does it work?</div>
+      <p class="tx">The 'Digital Card' will be activated automatically when you open the app.</p>
+      <p class="tx">When activated, walk very close to the door reader and tap your phone.</p>
+      <p class="tx">Door unlocks if you have valid access and vice versa.</p>
+      <p class="tx">The 'Digital Card' is deactivated when the app is minimized, closed, or screen is off.</p>
+      <p class="tx">Scanning resumes automatically when the app returns to the foreground.</p>
+     </div>
+     <div class="page" id="p-remote"></div>
+     <div class="page" id="p-devices"></div>
+     <div class="page" id="p-profile">
+      <div class="pf"><div class="av2" id="pAv">JP</div><div class="pn" id="pName">Jyotirmoy Patra</div><div class="role"><svg viewBox="0 0 24 24" fill="#2f8cff"><path d="M12 2 4 5v6c0 5 3.400 9.400 8 11 4.600-1.600 8-6 8-11V5l-8-3Z"/></svg>Organization Sub Admin</div><span id="who" hidden></span>
+      <button class="edit" id="editP" type="button">Edit Profile</button></div>
+      <div class="menu"><button class="mi" type="button" id="switchOrg">Switch Organization<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" data-a="Update Password">Update Password<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" id="userMgmt" data-a="User Management">User Management<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" data-a="Voice Message">Voice Message<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" data-a="Privacy Policy">Privacy Policy<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" data-a="Terms and Conditon">Terms and Conditon<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi " type="button" data-a="Support">Support<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi red" type="button" data-a="Delete Account">Delete Account<svg viewBox="0 0 16 16" fill="none" stroke="#ff3b3b" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><button class="mi red" type="button" data-a="Logout" id="logout">Logout<svg viewBox="0 0 16 16" fill="none" stroke="#ff3b3b" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.500 11.500 8 5 14.500"/></svg></button><div class="mi ver">App Version<span>Version 1.0 (38)</span></div></div>
+     </div>
+    </div>
+    <div class="tabbar">
+     <button class="on" data-m="open" type="button"><svg viewBox="0 0 28 26" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="13" r="4.500"/><path d="M12.500 13H26M22 13v4M18 13v3"/></svg>Open Doors</button>
+     <button data-m="devices" type="button"><svg viewBox="0 0 28 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="3" width="17" height="14" rx="3"/><path d="M5 7a3 3 0 0 0-2 3v8a3 3 0 0 0 3 3h13a3 3 0 0 0 3-2"/></svg>Devices</button>
+     <button data-m="profile" type="button"><svg viewBox="0 0 28 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="14" cy="13" r="11"/><circle cx="14" cy="10" r="3.600"/><path d="M6.500 21c1.800-3.500 4.200-5 7.500-5s5.700 1.500 7.500 5"/></svg>Profile</button>
+    </div>
+   </div>
+
+   <div class="sheet" id="sheet">
+    <div class="panel">
+     <h3>Reset password</h3>
+     <p>Enter your email address and we'll send you a reset link. (Demo — nothing is sent.)</p>
+     <div class="box"><input id="rEmail" type="email" placeholder="Enter Email Address" autocomplete="off"></div>
+     <div class="msg" id="rMsg"></div>
+     <div class="row"><button class="c" id="rCancel" type="button">Cancel</button><button class="s" id="rSend" type="button">Send Link</button></div>
+    </div>
+   </div>
+   <div class="sheet" id="orgSheet">
+    <div class="panel">
+     <h3>Choose organization to access</h3>
+     <p>Select one organization to continue.</p>
+     <button type="button" class="org" data-org="Utah Tech Labs"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.500l5 5L20 6.500"/></svg></span><span>Utah Tech Labs</span></button>
+     <button type="button" class="org" data-org="Auric Logon Office"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.500l5 5L20 6.500"/></svg></span><span>Auric Logon Office</span></button>
+     <div class="row"><button class="c" id="oCancel" type="button">Cancel</button><button class="s" id="oCont" type="button" disabled>Continue</button></div>
+    </div>
+   </div>
+   <div class="loader" id="loader"><div class="spin"></div><div class="lt" id="lText"></div><div class="bar"><i></i></div></div>
+   <div class="toast" id="toast"></div>
+   <div class="home"></div>
+  </div>
+ </div>
+</div>
+<div class="cap">ZYLX · iPhone 17 · Interactive Prototype</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+
+  // Scale the 402x874 device to fit any browser window, centred.
+  const stage = $('stage');
+  function fit(){
+    const s = Math.min((innerHeight - 40) / 898, (innerWidth - 20) / 426, 1.25);
+    stage.style.transform = 'scale(' + s + ')';
+  }
+  addEventListener('resize', fit); fit();
+
+  const email = $('email'), pw = $('pw'), eErr = $('eErr'), pErr = $('pErr');
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const flag = (el, out, msg) => { out.textContent = msg; el.classList.toggle('bad', !!msg); return !msg; };
+  const vEmail = () => flag(email, eErr, !email.value.trim() ? 'Email address is required' : re.test(email.value.trim()) ? '' : 'Enter a valid email address');
+  const vPw = () => flag(pw, pErr, pw.value ? '' : 'Password is required');
+  email.addEventListener('input', () => eErr.textContent && vEmail());
+  pw.addEventListener('input', () => pErr.textContent && vPw());
+
+  $('eye').addEventListener('click', () => {
+    const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    $('eyeSlash').style.display = show ? '' : 'none';
+    $('eye').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    pw.focus();
+  });
+
+  let tt;
+  function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('on'), 2800); }
+
+  $('login').addEventListener('submit', e => {
+    e.preventDefault();
+    const a = vEmail(), b = vPw();
+    if (!a || !b) { (a ? pw : email).focus(); return; }
+    const btn = $('btn'); btn.classList.add('loading'); btn.textContent = 'LOGGING IN…';
+    setTimeout(() => {
+      btn.classList.remove('loading'); btn.textContent = 'LOG IN';
+      const em = email.value.trim().toLowerCase();
+      const acct = pw.value === 'Abcd@12345' ? accounts[em] : null;
+      if (!acct) { flag(pw, pErr, 'Invalid email or password'); toast('Invalid email or password'); return; }
+      session = acct; switching = false;
+      if (acct.role === 'member') { enterDash('Utah Tech Labs'); return; }
+      document.querySelectorAll('.org').forEach(o => o.classList.remove('sel'));
+      $('oCont').disabled = true; $('orgSheet').classList.add('on');
+    }, 800);
+  });
+  document.querySelectorAll('.org').forEach(o => o.addEventListener('click', () => {
+    document.querySelectorAll('.org').forEach(x => x.classList.toggle('sel', x === o));
+    $('oCont').disabled = !document.querySelector('.org.sel');
+  }));
+  $('oCancel').addEventListener('click', () => $('orgSheet').classList.remove('on'));
+  let switching = false, curOrg = '';
+  const accounts = {
+    'jpadmin@yopmail.com': {role: 'admin', name: 'Jyotirmoy Patra', ini: 'JP', no: null},
+    'jpuser@yopmail.com': {role: 'member', name: 'Jyotirmoy User', ini: 'JU', no: 'XXXXXX7247'}
+  };
+  let session = accounts['jpadmin@yopmail.com'];
+  const roleHtml = {
+    admin: '<svg viewBox="0 0 24 24" fill="#2f8cff"><path d="M12 2 4 5v6c0 5 3.400 9.400 8 11 4.600-1.600 8-6 8-11V5l-8-3Z"/></svg>Organization Sub Admin',
+    member: '<svg viewBox="0 0 24 24" fill="#2f8cff"><circle cx="12" cy="7.500" r="4.500"/><path d="M3.500 21c0-4.600 3.800-7.500 8.500-7.500s8.500 2.900 8.500 7.500v.5h-17V21Z"/></svg>Member'
+  };
+  function applyOrg(name) {
+    const info = orgInfo[name], member = session.role === 'member';
+    curOrg = name;
+    document.querySelectorAll('.orgName').forEach(e => e.textContent = name);
+    $('logoG').setAttribute('fill', info.color);
+    $('cardNo').textContent = session.no || info.no;
+    ['hName', 'cName', 'pName'].forEach(i => $(i).textContent = session.name);
+    $('pAv').classList.toggle('gen', member);
+    $('pAv').innerHTML = member ? '<svg viewBox="0 0 24 24" fill="#000"><circle cx="12" cy="7.500" r="3.800"/><path d="M4.500 19.500c0-3.600 3-5.800 7.500-5.800s7.500 2.200 7.500 5.800c0 .6-.5 1-1.100 1H5.600c-.6 0-1.100-.4-1.100-1Z"/></svg>' : session.ini;
+    document.querySelectorAll('.role').forEach(r => r.innerHTML = roleHtml[session.role]);
+    document.querySelector('.tabbar button[data-m=devices]').style.display = member ? 'none' : '';
+    $('userMgmt').style.display = member ? 'none' : '';
+    $('switchOrg').style.display = member ? 'none' : '';
+    $('bellN').style.display = member ? 'none' : '';
+    renderDoors(name); renderDevices(name);
+    $('who').textContent = email.value.trim();
+  }
+  function enterDash(name) {
+    $('lText').innerHTML = 'Opening ' + name + '<small>Please wait…</small>';
+    $('loader').classList.add('on');
+    setTimeout(() => {
+      applyOrg(name);
+      document.querySelector('.tabbar button[data-m=open]').click();
+      document.querySelector('.d-tabs button[data-t=p-tap]').click();
+      $('dash').classList.add('on');
+      $('dash').classList.remove('swap'); void $('dash').offsetWidth; $('dash').classList.add('swap');
+      $('loader').classList.remove('on');
+      toast('Signed in to ' + name);
+    }, 1800);
+  }
+  $('switchOrg').addEventListener('click', () => {
+    switching = true;
+    document.querySelectorAll('.org').forEach(o => o.classList.toggle('sel', o.dataset.org === curOrg));
+    $('oCont').disabled = false; $('orgSheet').classList.add('on');
+  });
+  $('oCancel').addEventListener('click', () => { switching = false; });
+  $('oCont').addEventListener('click', () => {
+    const name = document.querySelector('.org.sel').dataset.org;
+    $('orgSheet').classList.remove('on');
+    if (!switching) { enterDash(name); return; }
+    switching = false;
+    if (name === curOrg) { toast('You are already in ' + name); return; }
+    $('lText').innerHTML = 'Switching to ' + name + '<small>Please wait…</small>';
+    $('loader').classList.add('on');
+    setTimeout(() => {
+      applyOrg(name);
+      document.querySelector('.tabbar button[data-m=open]').click();
+      document.querySelector('.d-tabs button[data-t=p-tap]').click();
+      $('loader').classList.remove('on');
+      $('dash').classList.remove('swap'); void $('dash').offsetWidth; $('dash').classList.add('swap');
+      toast('Switched to ' + name);
+    }, 1800);
+  });
+  const orgInfo = {
+    'Utah Tech Labs': {color: '#1ea7ff', no: 'XXXXXX8175'},
+    'Auric Logon Office': {color: '#1ea7ff', no: 'XXXXXX4620'}
+  };
+  const page = id => { document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === id)); };
+  document.querySelectorAll('.d-tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.d-tabs button').forEach(x => x.classList.toggle('on', x === b));
+    page(b.dataset.t);
+  }));
+  document.querySelectorAll('.tabbar button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabbar button').forEach(x => x.classList.toggle('on', x === b));
+    const m = b.dataset.m;
+    $('dash').classList.toggle('sub', m !== 'open');
+    $('dTitle').textContent = m === 'devices' ? 'Devices' : 'Profile';
+    if (m === 'open') { const t = document.querySelector('.d-tabs button.on'); page(t.dataset.t); }
+    else page('p-' + m);
+    document.querySelector('.d-body').scrollTop = 0;
+  }));
+  const wifiIc = '<svg viewBox="0 0 24 22" fill="#fff"><path d="M12 5c3.300 0 6.300 1.300 8.500 3.400l1.700-1.800A15.600 15.600 0 0 0 12 2.500 15.600 15.600 0 0 0 1.800 6.600l1.700 1.800A12.600 12.600 0 0 1 12 5Zm0 5c2 0 3.900.8 5.300 2.100l1.700-1.800A10.300 10.300 0 0 0 12 7.500c-2.700 0-5.200 1-7 2.800l1.700 1.800A7.800 7.800 0 0 1 12 10Zm0 5a4.100 4.100 0 0 1 2.500 1l-2.500 3.500-2.500-3.500a4.100 4.100 0 0 1 2.500-1Z"/></svg>';
+  const btIc = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 7.500 17 16.500 12 21V3l5 4.500L6.500 16.500"/></svg>';
+  const doors = {
+    'Utah Tech Labs': ['JP TC434 Door one', 'JP TC434 Door Two', 'UTL_BC220_Door1', 'JP Bc220 door', 'AK BC220 Door'],
+    'Auric Logon Office': ['Auric Main Door', 'Auric Server Room', 'Auric Back Gate']
+  };
+  function renderDoors(org) {
+    $('p-remote').innerHTML = (doors[org] || []).map(n =>
+      '<div class="rd"><b>' + n + '</b><div class="bt">' + (session.role === 'member' ? '' : '<button type="button" data-n="' + n + '" data-v="Wi-Fi">' + wifiIc + 'Open Door</button>') + '<button type="button" data-n="' + n + '" data-v="Bluetooth">' + btIc + 'Open Door</button></div></div>').join('');
+    $('p-remote').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      b.classList.add('ok');
+      toast(b.dataset.n + ' opened via ' + b.dataset.v);
+      setTimeout(() => b.classList.remove('ok'), 2000);
+    }));
+  }
+  renderDoors('Utah Tech Labs');
+  const devs = {
+    'Utah Tech Labs': [['TC430 (4286347189)',0],['TC430 (4282856013)',0],['M230 (4288529761)',1],['M230 (4280135276)',0],['BC220 (4283807456)',0],['BC220 (4283560749)',0],['TC434 (4283957426)',1]],
+    'Auric Logon Office': [['TC430 (4281120934)',1],['BC220 (4287741052)',0],['M230 (4289034417)',1]]
+  };
+  const phoneIc = '<svg viewBox="0 0 17 25" fill="none" stroke="#fff" stroke-width="2"><rect x="1" y="1" width="15" height="23" rx="2.500"/><circle cx="8.500" cy="19" r=".9" fill="#fff"/></svg>';
+  function renderDevices(org) {
+    $('p-devices').innerHTML = '<button class="cfg" id="cfgBtn" type="button"><svg viewBox="0 0 17 17" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M8.500 1v15M1 8.500h15"/></svg>Configure device</button><div class="sub-h">Configured device</div>' +
+      (devs[org] || []).map(d => '<div class="dv">' + phoneIc + '<b>' + d[0] + '</b><i class="' + (d[1] ? 'on' : 'off') + '">' + (d[1] ? 'ONLINE' : 'OFFLINE') + '</i></div>').join('');
+    $('cfgBtn').addEventListener('click', () => toast('Configure device (demo)'));
+    $('p-devices').querySelectorAll('.dv').forEach(el => el.addEventListener('click', () => toast(el.querySelector('b').textContent + ' · ' + el.querySelector('i').textContent.toLowerCase())));
+  }
+  renderDevices('Utah Tech Labs');
+  $('bell').addEventListener('click', () => toast('You have 6 new notifications'));
+  $('editP').addEventListener('click', () => toast('Edit Profile (demo)'));
+  document.querySelectorAll('.mi[data-a]').forEach(m => { if (m.id !== 'logout' && m.id !== 'switchOrg') m.addEventListener('click', () => toast(m.dataset.a + ' (demo)')); });
+  $('logout').addEventListener('click', () => {
+    $('dash').classList.remove('on'); pw.value = ''; pw.type = 'password'; $('eyeSlash').style.display = 'none';
+    document.querySelector('.tabbar button[data-m=open]').click();
+  });
+
+  const sheet = $('sheet');
+  $('forgot').addEventListener('click', () => { $('rEmail').value = email.value; $('rMsg').textContent = ''; sheet.classList.add('on'); setTimeout(() => $('rEmail').focus(), 250); });
+  const close = () => sheet.classList.remove('on');
+  $('rCancel').addEventListener('click', close);
+  sheet.addEventListener('click', e => { if (e.target === sheet) close(); });
+  $('rSend').addEventListener('click', () => {
+    const m = $('rMsg'), v = $('rEmail').value.trim();
+    if (!re.test(v)) { m.style.color = '#ff6b70'; m.textContent = 'Enter a valid email address'; return; }
+    m.style.color = '#7fe0a0'; m.textContent = 'Reset link sent to ' + v + ' (demo)';
+    setTimeout(close, 1600);
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape') { close(); $('orgSheet').classList.remove('on'); } });
+})();
+</script>
+</body>
+</html>
