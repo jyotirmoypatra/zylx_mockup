@@ -9,7 +9,7 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,#2a2a2e 0,#121214 55%,#08080a 100%);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+body{padding-bottom:48px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 20%,#2a2a2e 0,#121214 55%,#08080a 100%);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;color:#fff}
 
 /* iPhone 17 = 402 x 874 pt screen. Everything inside is authored in those points, then scaled to fit. */
 #stage{width:426px;height:898px;flex:none;transform-origin:center center;position:relative}
@@ -39,6 +39,7 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 #devPick .seg button.on{background:#fff;color:#000}
 #devPick select{height:34px;padding:0 10px;border-radius:9px;border:1px solid #34343a;background:#0c0c0e;color:#fff;font-family:inherit;font-size:13px;outline:none;cursor:pointer}
 #devPick .sz{font-size:11px;color:#85858c}
+@media (max-width:820px){body{padding-top:62px}#devPick{flex-direction:row;align-items:center;left:8px;right:8px;top:8px;padding:8px;gap:8px}#devPick .lbl,#devPick .sz{display:none}#devPick select{flex:1;min-width:0}}
 
 
 /* ---- Login screen ---- */
@@ -190,7 +191,7 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
 #oCont:disabled{opacity:.4;cursor:not-allowed}
 .toast{position:absolute;z-index:30;top:60px;left:16px;right:16px;padding:13px 16px;border-radius:16px;background:#2a2a2d;font-size:14px;box-shadow:0 10px 30px #000a;opacity:0;transform:translateY(-14px);transition:.3s;pointer-events:none}
 .toast.on{opacity:1;transform:none}
-.cap{position:fixed;bottom:10px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6c6c72;pointer-events:none}
+.cap{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#9a9aa2;pointer-events:none}
 </style>
 </head>
 <body>
@@ -346,7 +347,7 @@ body{display:flex;align-items:center;justify-content:center;overflow:hidden;back
   const stage = $('stage'), scr = $('screen'), ui = $('ui'), sel = $('devSel');
   let platform = 'ios', devIdx = 2;
   function fit() {
-    const s = Math.min((innerHeight - 40) / stage.offsetHeight, (innerWidth - 20) / stage.offsetWidth, 1.25);
+    const s = Math.min((innerHeight - 48 - 24 - (innerWidth <= 820 ? 62 : 0)) / stage.offsetHeight, (innerWidth - 20) / stage.offsetWidth, 1.25);
     stage.style.transform = 'scale(' + s + ')';
   }
   function setDevice() {
